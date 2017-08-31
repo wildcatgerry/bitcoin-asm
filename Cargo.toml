@@ -2,6 +2,7 @@
 name = "bitcoin-asm"
 version = "0.1.0"
 authors = ["Gerard"]
+license = "MIT"
 
 [dependencies]
 app = "0.5.6"
