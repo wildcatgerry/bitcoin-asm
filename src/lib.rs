@@ -218,15 +218,15 @@ fn opcode_to_command<'a>(opcode: u8) -> &'a str {
     }
 }
 
-pub fn assemble(conf: config::Config) {
+pub fn assemble_file(conf: config::Config) {
     let body = load_file(&conf);
 
-    let hex_buffer = assemble_internal(body);
+    let hex_buffer = assemble(body);
 
     write_file(&conf, hex_buffer);
 }
 
-fn assemble_internal(body: String) -> String {
+pub fn assemble(body: String) -> String {
     let mut hex_buffer = String::new();
 
     for token in body.split_whitespace() {
@@ -234,7 +234,7 @@ fn assemble_internal(body: String) -> String {
             hex_buffer.push_str(&format!("{:X}", command_to_opcode(token)));
         } 
         else {
-            hex_buffer.push_str(&token);
+            hex_buffer.push_str(&token.to_uppercase());
         }
     }
 
@@ -261,7 +261,7 @@ mod tests {
     #[test]
     fn test_single() {
         let body = "OP_RETURN";
-        assert_eq!("6A".to_string(), assemble_internal(body.to_string()));
+        assert_eq!("6A".to_string(), assemble(body.to_string()));
     }
 
     #[test]
@@ -271,6 +271,6 @@ OP_HASH160
 788464014149d93b4a6135f3d665a0a2d743e6c3 
 OP_EQUALVERIFY 
 OP_CHECKSIG";
-        assert_eq!("76A9788464014149d93b4a6135f3d665a0a2d743e6c388AC".to_string(), assemble_internal(body.to_string()));
+        assert_eq!("76A9788464014149D93B4A6135F3D665A0A2D743E6C388AC".to_string(), assemble(body.to_string()));
     }
 }
